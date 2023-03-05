@@ -37,7 +37,7 @@ async function getDades(req, res) {
   if (receivedPOST) {
     if (receivedPOST.type == "getListData") {
       await wait(1000);
-      let listData = queryDatabase(`SELECT id, name, FROM users`)
+      let listData = await queryDatabase(`SELECT id, name, FROM users`)
       result = { status: "OK", result: listData }
     }
     if (receivedPOST.type == "getFormData") {
