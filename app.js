@@ -35,9 +35,13 @@ async function getDades(req, res) {
   var objConsolesList = JSON.parse(textFile)
 
   if (receivedPOST) {
+    if (receivedPOST.type == "testConnection") {
+      await wait(1000);
+      result = { status: "OK"}
+    }
     if (receivedPOST.type == "getListData") {
       await wait(1000);
-      let listData = await queryDatabase(`SELECT id, name FROM users`)
+      let listData = queryDatabase(`SELECT id, name, FROM users`)
       result = { status: "OK", result: listData }
     }
     if (receivedPOST.type == "getFormData") {
@@ -55,14 +59,14 @@ async function getDades(req, res) {
         result = { status: "KO", result: "Email no vàlid" }
       } else if (!/[0-9]/.test(receivedPOST.phone)) {
         result = { status: "KO", result: "Telèfon no vàlid" }
-      } else if (/[0-9]/.test(receivedPOST.city)) {
+      } else if (!/[0-9]/.test(receivedPOST.city)) {
         result = { status: "KO", result: "Ciutat no vàlida" }
       } else {
         let email = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE email = "${receivedPOST.email}"`)
         if (email[0].counter != 0) {
           result = { status: "KO", result: "Email no disponible" }
         } else {
-          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE phoneNum = "${receivedPOST.phone}"`)
+          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM Usuari WHERE phoneNum = "${receivedPOST.phone}"`)
           if (phone[0].counter != 0) {
             result = { status: "KO", result: "Telèfon no disponible" }
           } else {
@@ -82,19 +86,19 @@ async function getDades(req, res) {
         result = { status: "KO", result: "Email no vàlid" }
       } else if (!/[0-9]/.test(receivedPOST.phone)) {
         result = { status: "KO", result: "Telèfon no vàlid" }
-      } else if (/[0-9]/.test(receivedPOST.city)) {
+      } else if (!/[0-9]/.test(receivedPOST.city)) {
         result = { status: "KO", result: "Ciutat no vàlida" }
       } else {
         let email = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE email = "${receivedPOST.email}"`)
         if (email[0].counter != 0) {
           result = { status: "KO", result: "Email no disponible" }
         } else {
-          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE phoneNum = "${receivedPOST.phone}"`)
+          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM Usuari WHERE phoneNum = "${receivedPOST.phone}"`)
           if (phone[0].counter != 0) {
             result = { status: "KO", result: "Telèfon no disponible" }
           } else {
             await queryDatabase(`UPDATE users SET name = '${receivedPOST.name}', lastName = '${receivedPOST.lastName}', email = '${receivedPOST.email}', phoneNum = '${receivedPOST.phone}', address = '${receivedPOST.address}', city = '${receivedPOST.city}' WHERE id = '${receivedPOST.id}'`)
-            result = { status: "OK", result: "Insert complete" }
+            result = { status: "OK", result: "Update complete" }
           }
         }
       }
@@ -218,11 +222,11 @@ function queryDatabase(query) {
 
   return new Promise((resolve, reject) => {
     var connection = mysql.createConnection({
-      host: process.env.MYSQLHOST || "containers-us-west-48.railway.app",
-      port: process.env.MYSQLPORT || 5737,
+      host: process.env.MYSQLHOST || "localhost",
+      port: process.env.MYSQLPORT || 3306,
       user: process.env.MYSQLUSER || "root",
-      password: process.env.MYSQLPASSWORD || "U8YRuV2QQzzhf6zTmpQM",
-      database: process.env.MYSQLDATABASE || "railway"
+      password: process.env.MYSQLPASSWORD || "",
+      database: process.env.MYSQLDATABASE || "test"
     });
 
     connection.query(query, (error, results) => {
