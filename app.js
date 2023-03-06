@@ -66,7 +66,7 @@ async function getDades(req, res) {
         if (email[0].counter != 0) {
           result = { status: "KO", result: "Email no disponible" }
         } else {
-          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM Usuari WHERE phoneNum = "${receivedPOST.phone}"`)
+          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE phoneNum = "${receivedPOST.phone}"`)
           if (phone[0].counter != 0) {
             result = { status: "KO", result: "Telèfon no disponible" }
           } else {
@@ -93,7 +93,7 @@ async function getDades(req, res) {
         if (email[0].counter != 0) {
           result = { status: "KO", result: "Email no disponible" }
         } else {
-          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM Usuari WHERE phoneNum = "${receivedPOST.phone}"`)
+          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE phoneNum = "${receivedPOST.phone}"`)
           if (phone[0].counter != 0) {
             result = { status: "KO", result: "Telèfon no disponible" }
           } else {
