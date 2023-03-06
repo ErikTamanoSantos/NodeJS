@@ -59,7 +59,7 @@ async function getDades(req, res) {
         result = { status: "KO", result: "Email no vàlid" }
       } else if (!/[0-9]/.test(receivedPOST.phone)) {
         result = { status: "KO", result: "Telèfon no vàlid" }
-      } else if (!/[0-9]/.test(receivedPOST.city)) {
+      } else if (/[0-9]/.test(receivedPOST.city)) {
         result = { status: "KO", result: "Ciutat no vàlida" }
       } else {
         let email = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE email = "${receivedPOST.email}"`)
@@ -86,14 +86,14 @@ async function getDades(req, res) {
         result = { status: "KO", result: "Email no vàlid" }
       } else if (!/[0-9]/.test(receivedPOST.phone)) {
         result = { status: "KO", result: "Telèfon no vàlid" }
-      } else if (!/[0-9]/.test(receivedPOST.city)) {
+      } else if (/[0-9]/.test(receivedPOST.city)) {
         result = { status: "KO", result: "Ciutat no vàlida" }
       } else {
-        let email = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE email = "${receivedPOST.email}"`)
+        let email = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE email = "${receivedPOST.email}" AND id != '${receivedPOST.id}'`)
         if (email[0].counter != 0) {
           result = { status: "KO", result: "Email no disponible" }
         } else {
-          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE phoneNum = "${receivedPOST.phone}"`)
+          let phone = await queryDatabase(`SELECT COUNT(*) as counter FROM users WHERE phoneNum = "${receivedPOST.phone} AND id != '${receivedPOST.id}'"`)
           if (phone[0].counter != 0) {
             result = { status: "KO", result: "Telèfon no disponible" }
           } else {
